@@ -6,7 +6,7 @@ from objects import Ship
 class Game:
 
     def __init__(self):
-        self.ship = Ship([0, -0.8], [1, 0, 0], 0.1, 0.01)
+        self.ship = Ship([0, -0.9], [0, 0, 1], 0.1, 0.05)
 
     # Handlers
     def keyboard(self, key, x, y):
@@ -23,8 +23,7 @@ class Game:
 
     def run(self):
         glClear(GL_COLOR_BUFFER_BIT)
-        glLoadIdentity()
-
+        
         self.ship.draw()
 
         glutSwapBuffers()
