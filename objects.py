@@ -1,4 +1,4 @@
-from primitives import Triangle
+from primitives import Triangle, Diamond
 
 
 class Ship(Triangle):
@@ -18,3 +18,11 @@ class Ship(Triangle):
 
     def move_right(self, displacement):
         self.coords[0] = min(self.coords[0]+displacement, 1-self.length/2)
+
+class Projectile(Diamond):
+
+    def __init__(self, coords, color, width, length):
+        super().__init__(coords, color, width, length)
+    
+    def advance(self):
+        self.coords[1] += 0.01
