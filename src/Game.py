@@ -49,7 +49,7 @@ class Game:
         
         # Spawn enemies
         if random() < 0.005:
-            posX = uniform(-self.mundoLar/2, self.mundoLar/2)
+            posX = uniform(-self.mundoLar/2+1.15, self.mundoLar/2-1.15)
             if random() < 0.5:
                 self.enemies.append(EnemyA(posX))
             else:
@@ -65,7 +65,7 @@ class Game:
         
         for enemy in self.enemies:
             enemy.updatePosition()
-            if enemy.position.y < -self.mundoAlt/2:
+            if enemy.position.y < -self.mundoAlt/2-2:
                 self.enemies.remove(enemy)
         
         # Firing

@@ -15,10 +15,10 @@ class Ship(Triangle):
         self.fireRateCheio = 100
     
     def updatePosition(self, game):
-        if game.direita and self.position.x <= (game.mundoLar/2-0.75):
+        if game.direita and self.position.x <= game.mundoLar/2-1.15:
             self.position += self.velocity
             
-        if game.esquerda and self.position.x >= -(game.mundoLar/2-0.75):
+        if game.esquerda and self.position.x >= -game.mundoLar/2+1.15:
             self.position -= self.velocity
 
     def atirar(self, game):
