@@ -5,21 +5,21 @@ import glm
 
 class EnemyA(Star):
     def __init__(self, x):
-        self.vecPosition = glm.vec3(x, 10, 0)
-        self.vecScale = glm.vec3(2, 2, 1)
-        self.deslocamento = glm.vec3(0, -1, 0)
-        self.velocDeslocamento = 0.05
-        self.color = [1, 0, 0]
+        super().__init__(
+            glm.vec3(x, 8, 0), # Position
+            glm.vec3(1.5, 1.5, 1), # Scale
+            (1, 0, 0), # Color
+            5 # N_corners
+        )
+        self.velocity = glm.vec3(0, -0.05, 0)
         self.fireRate = 0
         self.fireRateCheio = 100
         
-        super().__init__(
-            self.vecPosition, self.vecScale, self.deslocamento, self.velocDeslocamento, self.color, 5
-        )
-        
     def updatePosition(self):
-        self.rotation += 1
-        self.position = self.position + self.velocDeslocamento * self.deslocamento
+        self.rotation.w -= 0.5 # 1 deg = 0.01745 rad
+        if abs(self.rotation.w) >= 360:
+            self.rotation.w = 0
+        self.position += self.velocity
         
     def atirar(self, game):
         if self.fireRate <= 0:

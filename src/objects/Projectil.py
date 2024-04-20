@@ -2,20 +2,17 @@ from src.primitive.Triangle import Triangle
 import glm
 
 class Projectil(Triangle):
-    def __init__(self, posX, isEnemy):
-        self.vecPosition = glm.vec3(posX, -7, 0)
-        self.vecScale = glm.vec3(0.5, 0.5, 1)
-        self.deslocamento = glm.vec3(0, 1, 0)
-        self.velocDeslocamento = 0.3
-        self.isEnemy = isEnemy
-        self.color = [0, 1, 0]
+    def __init__(self, x, y, isEnemy):
         super().__init__(
-            self.vecPosition, self.vecScale, self.deslocamento, self.velocDeslocamento, self.color
+            glm.vec3(x, y, 0), # Position
+            glm.vec3(0.5, 0.5, 1), # Scale
+            (0, 1, 0) # Color
         )
+        self.velocity = glm.vec3(0, 1, 0) if not isEnemy else glm.vec3(0, 0.25, 0)
+        self.isEnemy = isEnemy
     
     def updatePosition(self):
         if self.isEnemy:
-            self.position = self.position - self.velocDeslocamento * self.deslocamento
+            self.position -= self.velocity
         else:
-            self.position = self.position + self.velocDeslocamento * self.deslocamento  
-            
+            self.position += self.velocity 

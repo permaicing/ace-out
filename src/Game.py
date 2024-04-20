@@ -47,7 +47,7 @@ class Game:
         glutTimerFunc(int(1000 / self.FPS), self.timer, 0)
         
         if random() < 0.01:
-            self.enemies.append(EnemyA(uniform(-40, 40)))
+            self.enemies.append(EnemyA(uniform(-self.mundoLar/2, self.mundoLar/2)))
         self.ship.updatePosition(self)
         for projectil in self.projectiles:
             projectil.updatePosition()
@@ -58,6 +58,9 @@ class Game:
             enemy.updatePosition()
             if enemy.position.y < -self.mundoAlt/2:
                 self.enemies.remove(enemy)
+            else:
+                enemy.atirar(self)
+                enemy.fireRate -= 1
 
         
         self.ship.fireRate -= 1
@@ -80,7 +83,6 @@ class Game:
         
         self.ship.draw()
         for enemy in self.enemies:
-            glLoadIdentity()
             enemy.draw()
         
         glutSwapBuffers()
