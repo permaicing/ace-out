@@ -1,4 +1,4 @@
-from math import pi as PI, sin, cos
+from math import pi as PI, sin, cos, radians
 from OpenGL.GL import *
 import glm
 import numpy as np
@@ -8,6 +8,7 @@ class Star:
         self.identidade  = glm.mat4(1) 
         self.position = vecPosition
         
+        self.rotation = 0
         self.scale = glm.scale(self.identidade, vecSacale) 
         self.translate = glm.mat4(1)
         
@@ -21,6 +22,7 @@ class Star:
     def calcMatrix(self):
         self.translate = glm.translate(self.identidade, self.position)
         transform = self.translate * self.scale
+        transform *= glm.rotate(self.identidade, radians(self.rotation), glm.vec3(0, 0, 1))
         transform = glm.transpose(transform)
         return transform
     

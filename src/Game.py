@@ -1,4 +1,6 @@
+from random import random, uniform
 from src.objects.Ship import Ship
+from src.objects.EnemyA import EnemyA
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 
@@ -6,6 +8,7 @@ class Game:
     def __init__(self):
         self.ship = Ship()
         self.projectiles = []
+        self.enemies = []
 
         self.FPS = 60
         self.frente = False
@@ -43,13 +46,20 @@ class Game:
     def timer(self, v):
         glutTimerFunc(int(1000 / self.FPS), self.timer, 0)
         
+        if random() < 0.01:
+            self.enemies.append(EnemyA(uniform(-40, 40)))
         self.ship.updatePosition(self)
         for projectil in self.projectiles:
             projectil.updatePosition()
             
             if (projectil.position.y > self.mundoAlt/2) or (projectil.position.y < -self.mundoAlt/2):
                 self.projectiles.remove(projectil)
-                
+        for enemy in self.enemies:
+            enemy.updatePosition()
+            if enemy.position.y < -self.mundoAlt/2:
+                self.enemies.remove(enemy)
+
+        
         self.ship.fireRate -= 1
         self.ship.atirar(self)
         
@@ -67,6 +77,10 @@ class Game:
 
         for projectile in self.projectiles:
             projectile.draw()
+        
         self.ship.draw()
+        for enemy in self.enemies:
+            glLoadIdentity()
+            enemy.draw()
         
         glutSwapBuffers()
