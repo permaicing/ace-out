@@ -13,7 +13,7 @@ class Game:
     def __init__(self):
         self.ship = Ship()
         self.HP = 3
-        self.upgrades = 10
+        self.upgrades = 0
         self.projectiles = []
         self.enemies = []
 
@@ -87,12 +87,12 @@ class Game:
                 for enemy in self.enemies:
                     d = sqrt((projectile.position.x-enemy.position.x)**2 + (projectile.position.y-enemy.position.y)**2)
                     if d <= 0.8:
+                        self.upgrades = min(self.upgrades+1, 10)
                         self.enemies.remove(enemy)
                         self.projectiles.remove(projectile)
             else:
                 d = sqrt((projectile.position.x-self.ship.position.x)**2 + (projectile.position.y-self.ship.position.y)**2)
                 if d < 0.5:
-                    print(self.HP, d, projectile.position, self.ship.position)
                     self.projectiles.remove(projectile)
                     self.HP -= 1
                     if self.HP == 0:
@@ -110,8 +110,11 @@ class Game:
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
 
-        # Drawings
+        # Apply upgrades
+        self.ship.fireRateCheio = 100-self.upgrades*5
 
+
+        # Drawings
         for i in range(self.HP):
             Heart(
                 vec3(-self.mundoLar/2+1.15+i*0.6, self.mundoAlt/2-1.15, 1),
