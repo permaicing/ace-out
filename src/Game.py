@@ -81,6 +81,21 @@ class Game:
             enemy.fireRate -= 1
             enemy.atirar(self)
         
+        # Collision detection
+        for projectile in self.projectiles:
+            if not projectile.isEnemy:
+                for enemy in self.enemies:
+                    d = sqrt((projectile.position.x-enemy.position.x)**2 + (projectile.position.y-enemy.position.y)**2)
+                    if d <= 0.8:
+                        self.enemies.remove(enemy)
+                        self.projectiles.remove(projectile)
+            else:
+                d = sqrt((projectile.position.x-self.ship.position.x)**2 + (projectile.position.x-self.ship.position.x)**2)
+                if d < 0.06:
+                    self.HP -= 1
+                    if self.HP == 0:
+                        glutLeaveMainLoop()
+
         glutPostRedisplay()
 
     def run(self):
