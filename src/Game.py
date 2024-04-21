@@ -1,13 +1,19 @@
 from random import random, uniform
+from math import sqrt
 from src.objects.Ship import Ship
+from src.primitive.Heart import Heart
+from src.primitive.Shield import Shield
 from src.objects.EnemyA import EnemyA
 from src.objects.EnemyB import EnemyB
 from OpenGL.GL import *
 from OpenGL.GLUT import *
+from glm import vec3
 
 class Game:
     def __init__(self):
         self.ship = Ship()
+        self.HP = 3
+        self.upgrades = 10
         self.projectiles = []
         self.enemies = []
 
@@ -23,7 +29,7 @@ class Game:
         self.muldoLar = 20
 
     def inicio(self):
-        glClearColor(0.5, 0.5, 0.5, 1)
+        glClearColor(0, 0, 0, 1)
         glEnable(GL_MULTISAMPLE)
 
     def tecladoSpecial(self, key, x, y):
@@ -87,9 +93,24 @@ class Game:
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
 
+        # Drawings
+
+        for i in range(self.HP):
+            Heart(
+                vec3(-self.mundoLar/2+1.15+i*0.6, self.mundoAlt/2-1.15, 1),
+                vec3(0.5, 0.5, 1),
+                (1, 0, 1)
+            ).draw()
+        for i in range(self.upgrades):
+            Shield(
+                vec3(self.mundoLar/2-1.15-i*0.6, self.mundoAlt/2-1.15, 1),
+                vec3(0.5, 0.5, 1),
+                (0, 1, 1)
+            ).draw()
+
         for projectile in self.projectiles:
             projectile.draw()
-        
+
         self.ship.draw()
         for enemy in self.enemies:
             enemy.draw()
