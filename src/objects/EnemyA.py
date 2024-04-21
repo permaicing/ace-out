@@ -1,6 +1,6 @@
 from OpenGL.GL import *
-from src.primitive.Star import Star
-from src.objects.Projectil import Projectil
+from src.primitives.Star import Star
+from src.objects.Projectile import Projectile
 import glm
 
 class EnemyA(Star):
@@ -12,18 +12,18 @@ class EnemyA(Star):
             5 # N_corners
         )
         self.velocity = glm.vec3(0, -0.05, 0)
-        self.fireRate = 0
-        self.fireRateCheio = 100
+        self.fireGauge = 0
+        self.fireGaugeFull = 200
         
     def updatePosition(self):
-        self.rotation.w -= 0.5 # 1 deg = 0.01745 rad
+        self.rotation.w -= 0.5
         if abs(self.rotation.w) >= 360:
             self.rotation.w = 0
         self.position += self.velocity
         
-    def atirar(self, game):
-        if self.fireRate <= 0:
+    def fire(self, game):
+        if self.fireGauge <= 0:
             game.projectiles.append(
-                Projectil(self.position.x, self.position.y, True)
+                Projectile(self.position.x, self.position.y, True)
             )
-            self.fireRate = self.fireRateCheio
+            self.fireGauge = self.fireGaugeFull

@@ -1,7 +1,6 @@
 from math import pi as PI, sin, cos, radians
 from OpenGL.GL import *
-from src.primitive.Primitive import Primitive
-import glm
+from src.primitives.Primitive import Primitive
 
 class Star(Primitive):
     def __init__(self, position, scale, color, n_corners):

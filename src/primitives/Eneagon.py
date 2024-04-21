@@ -1,8 +1,6 @@
 from math import pi as PI, sin, cos
-from src.primitive.Primitive import Primitive
+from src.primitives.Primitive import Primitive
 from OpenGL.GL import *
-import glm
-import numpy as np
 
 class Eneagon(Primitive):
     def __init__(self, position, scale, color, n_sides):

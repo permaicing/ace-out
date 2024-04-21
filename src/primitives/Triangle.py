@@ -1,6 +1,5 @@
 from OpenGL.GL import *
-from src.primitive.Primitive import Primitive
-import glm
+from src.primitives.Primitive import Primitive
 
 class Triangle(Primitive):
     def __init__(self, position, scale, color):

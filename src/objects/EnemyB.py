@@ -1,6 +1,6 @@
 from OpenGL.GL import *
-from src.primitive.Eneagon import Eneagon
-from src.objects.Projectil import Projectil
+from src.primitives.Eneagon import Eneagon
+from src.objects.Projectile import Projectile
 import glm
 
 class EnemyB(Eneagon):
@@ -13,8 +13,8 @@ class EnemyB(Eneagon):
         )
         self.velocity = glm.vec3(0, -0.05, 0)
         self.scale_delta = 0.01
-        self.fireRate = 0
-        self.fireRateCheio = 150
+        self.fireGauge = 0
+        self.fireGaugeFull = 200
         
     def updatePosition(self):
         self.scale.x += self.scale_delta
@@ -23,9 +23,9 @@ class EnemyB(Eneagon):
             self.scale_delta *= -1
         self.position += self.velocity
         
-    def atirar(self, game):
-        if self.fireRate <= 0:
+    def fire(self, game):
+        if self.fireGauge <= 0:
             game.projectiles.append(
-                Projectil(self.position.x, self.position.y, True)
+                Projectile(self.position.x, self.position.y, True)
             )
-            self.fireRate = self.fireRateCheio
+            self.fireGauge = self.fireGaugeFull

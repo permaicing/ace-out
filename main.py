@@ -7,13 +7,12 @@ if __name__ == '__main__':
     glutCreateWindow('Ace-Out')
 
     game = Game()
-    glutInitWindowSize(game.janelaLar, game.janelaAlt)
+    glutInitWindowSize(game.windowW, game.windowH)
     glutInitWindowPosition(0, 0)
-    game.inicio()
 
     glutTimerFunc(int(1000 / game.FPS), game.timer, 0)
-    glutSpecialFunc(game.tecladoSpecial)
-    glutSpecialUpFunc(game.tecladoUpSpecial)
+    glutSpecialFunc(game.keyboardSpecial)
+    glutSpecialUpFunc(game.keyboardSpecialUp)
     glutReshapeFunc(game.reshape)
     glutDisplayFunc(game.run)
     glutMainLoop()

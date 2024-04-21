@@ -1,8 +1,8 @@
 from random import random, uniform
 from math import sqrt
 from src.objects.Ship import Ship
-from src.primitive.Heart import Heart
-from src.primitive.Shield import Shield
+from src.primitives.Heart import Heart
+from src.primitives.Shield import Shield
 from src.objects.EnemyA import EnemyA
 from src.objects.EnemyB import EnemyB
 from OpenGL.GL import *
@@ -11,43 +11,47 @@ from glm import vec3
 
 class Game:
     def __init__(self):
-        self.ship = Ship()
+        # Status
         self.HP = 3
         self.upgrades = 0
+        
+        # Objects
+        self.ship = Ship()
         self.projectiles = []
         self.enemies = []
 
+        # Internals
         self.FPS = 60
-        self.frente = False
-        self.tras = False
-        self.esquerda = False
-        self.direita = False
+        self.front = False
+        self.back = False
+        self.left = False
+        self.right = False
 
-        self.janelaAlt = 80
-        self.janelaLar = 80
-        self.mundoAlt = 20
-        self.muldoLar = 20
+        self.windowH = 80
+        self.windowW = 80
+        self.sceneH = 20
+        self.sceneW = 20
 
-    def inicio(self):
+        # Startup
         glClearColor(0, 0, 0, 1)
         glEnable(GL_MULTISAMPLE)
 
-    def tecladoSpecial(self, key, x, y):
+    def keyboardSpecial(self, key, x, y):
         if key == GLUT_KEY_LEFT:
-            self.esquerda = True
+            self.left = True
         elif key == GLUT_KEY_RIGHT:
-            self.direita = True
+            self.right = True
 
-    def tecladoUpSpecial(self, key, x, y):
+    def keyboardSpecialUp(self, key, x, y):
         if key == GLUT_KEY_LEFT:
-            self.esquerda = False
+            self.left = False
         elif key == GLUT_KEY_RIGHT:
-            self.direita = False
+            self.right = False
 
     def reshape(self, w, h):
-        self.janelaLar = w
-        self.janelaAlt = h
-        self.mundoLar = self.mundoAlt * w / h
+        self.windowW = w
+        self.windowH = h
+        self.sceneW = self.sceneH * w / h
         glViewport(0, 0, w, h)
 
     def timer(self, v):
@@ -55,7 +59,7 @@ class Game:
         
         # Spawn enemies
         if random() < 0.005:
-            posX = uniform(-self.mundoLar/2+1.15, self.mundoLar/2-1.15)
+            posX = uniform(-self.sceneW/2+1.15, self.sceneW/2-1.15)
             if random() < 0.5:
                 self.enemies.append(EnemyA(posX))
             else:
@@ -66,20 +70,20 @@ class Game:
 
         for projectil in self.projectiles:
             projectil.updatePosition()
-            if (projectil.position.y > self.mundoAlt/2) or (projectil.position.y < -self.mundoAlt/2):
+            if (projectil.position.y > self.sceneH/2) or (projectil.position.y < -self.sceneH/2):
                 self.projectiles.remove(projectil)
         
         for enemy in self.enemies:
             enemy.updatePosition()
-            if enemy.position.y < -self.mundoAlt/2-2:
+            if enemy.position.y < -self.sceneH/2-2:
                 self.enemies.remove(enemy)
         
         # Firing
-        self.ship.fireRate -= 1
-        self.ship.atirar(self)
+        self.ship.fireGauge -= 1
+        self.ship.fire(self)
         for enemy in self.enemies:
-            enemy.fireRate -= 1
-            enemy.atirar(self)
+            enemy.fireGauge -= 1
+            enemy.fire(self)
         
         # Collision detection
         for projectile in self.projectiles:
@@ -105,25 +109,25 @@ class Game:
 
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
-        glOrtho(-self.mundoLar / 2, self.mundoLar / 2, -self.mundoAlt / 2, self.mundoAlt / 2, -1, 1)
+        glOrtho(-self.sceneW / 2, self.sceneW / 2, -self.sceneH / 2, self.sceneH / 2, -1, 1)
 
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
 
         # Apply upgrades
-        self.ship.fireRateCheio = 100-self.upgrades*5
+        self.ship.fireGaugeFull = 100-self.upgrades*5
 
 
         # Drawings
         for i in range(self.HP):
             Heart(
-                vec3(-self.mundoLar/2+1.15+i*0.6, self.mundoAlt/2-1.15, 1),
+                vec3(-self.sceneW/2+1.15+i*0.6, self.sceneH/2-1.15, 1),
                 vec3(0.5, 0.5, 1),
                 (1, 0, 1)
             ).draw()
         for i in range(self.upgrades):
             Shield(
-                vec3(self.mundoLar/2-1.15-i*0.6, self.mundoAlt/2-1.15, 1),
+                vec3(self.sceneW/2-1.15-i*0.6, self.sceneH/2-1.15, 1),
                 vec3(0.5, 0.5, 1),
                 (0, 1, 1)
             ).draw()
