@@ -90,8 +90,10 @@ class Game:
                         self.enemies.remove(enemy)
                         self.projectiles.remove(projectile)
             else:
-                d = sqrt((projectile.position.x-self.ship.position.x)**2 + (projectile.position.x-self.ship.position.x)**2)
-                if d < 0.06:
+                d = sqrt((projectile.position.x-self.ship.position.x)**2 + (projectile.position.y-self.ship.position.y)**2)
+                if d < 0.5:
+                    print(self.HP, d, projectile.position, self.ship.position)
+                    self.projectiles.remove(projectile)
                     self.HP -= 1
                     if self.HP == 0:
                         glutLeaveMainLoop()
