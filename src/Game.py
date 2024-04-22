@@ -60,7 +60,7 @@ class Game:
         # Spawn enemies
         if random() < 0.005:
             posX = uniform(-self.sceneW/2+1.15, self.sceneW/2-1.15)
-            if random() < 0.5:
+            if random() < 0.25:
                 self.enemies.append(EnemyA(posX))
             else:
                 self.enemies.append(EnemyB(posX))
