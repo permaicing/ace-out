@@ -75,7 +75,7 @@ class Game:
         
         for enemy in self.enemies:
             enemy.updatePosition()
-            if enemy.position.y < -self.sceneH/2-2:
+            if enemy.position.y < -self.sceneH/2-2 or abs(enemy.position.x) > self.sceneW/2+2:
                 self.enemies.remove(enemy)
         
         # Firing

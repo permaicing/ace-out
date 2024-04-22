@@ -1,3 +1,4 @@
+from random import uniform
 from OpenGL.GL import *
 from src.primitives.Eneagon import Eneagon
 from src.objects.Projectile import Projectile
@@ -11,7 +12,7 @@ class EnemyB(Eneagon):
             (1, 0, 0), # Color
             6 # N_sides
         )
-        self.velocity = glm.vec3(0, -0.05, 0)
+        self.velocity = 0.05*glm.normalize(glm.vec3(uniform(-1, 1), -1, 0))
         self.scale_delta = 0.01
         self.fireGauge = 0
         self.fireGaugeFull = 200
