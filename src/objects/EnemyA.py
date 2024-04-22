@@ -1,6 +1,6 @@
 from OpenGL.GL import *
 from src.primitives.Star import Star
-from src.objects.Projectile import Projectile
+from src.objects.DirectedProjectile import DirectedProjectile
 import glm
 
 class EnemyA(Star):
@@ -24,6 +24,6 @@ class EnemyA(Star):
     def fire(self, game):
         if self.fireGauge <= 0:
             game.projectiles.append(
-                Projectile(self.position.x, self.position.y, True)
+                DirectedProjectile(self.position.x, self.position.y, game.ship.position)
             )
             self.fireGauge = self.fireGaugeFull
