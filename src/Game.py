@@ -94,6 +94,7 @@ class Game:
                         self.upgrades = min(self.upgrades+1, 10)
                         self.enemies.remove(enemy)
                         self.projectiles.remove(projectile)
+                        break
             else:
                 d = sqrt((projectile.position.x-self.ship.position.x)**2 + (projectile.position.y-self.ship.position.y)**2)
                 if d < 0.5:
