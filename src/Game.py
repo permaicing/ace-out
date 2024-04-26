@@ -120,6 +120,13 @@ class Game:
 
 
         # Drawings
+        for projectile in self.projectiles:
+            projectile.draw()
+
+        self.ship.draw()
+        for enemy in self.enemies:
+            enemy.draw()
+        
         for i in range(self.HP):
             Heart(
                 vec3(-self.sceneW/2+1.15+i*0.6, self.sceneH/2-1.15, 1),
@@ -132,12 +139,5 @@ class Game:
                 vec3(0.5, 0.5, 1),
                 (0, 1, 1)
             ).draw()
-
-        for projectile in self.projectiles:
-            projectile.draw()
-
-        self.ship.draw()
-        for enemy in self.enemies:
-            enemy.draw()
         
         glutSwapBuffers()
