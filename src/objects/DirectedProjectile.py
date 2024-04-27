@@ -8,6 +8,7 @@ class DirectedProjectile(Triangle):
             vec3(x, y, 0), # Position
             vec3(0.5, -0.5, 1), # Scale
             (0, 1, 0) # Color
+            # Texture('src/texture/bullets/enemy_bullet.png')
         )
         aux = normalize(target - self.position)
         self.velocity = 0.25*aux
