@@ -1,5 +1,6 @@
 from src.primitives.Triangle import Triangle
 from src.objects.Projectile import Projectile
+from src.textures.Texture import Texture
 from glm import vec3
 
 class Ship(Triangle):
@@ -7,7 +8,8 @@ class Ship(Triangle):
         super().__init__(
             vec3(0, -8, 0), # Position
             vec3(2, 2, 1), # Scale
-            (0, 0, 1) # Color
+            (1, 1, 1), # Color
+            Texture('src/textures/ships/player_ship.png') # Texture loading
         )
         self.velocity = 0.2*vec3(1, 0, 0)
         self.fireGauge = 100
