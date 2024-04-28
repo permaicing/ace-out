@@ -1,13 +1,14 @@
-from src.primitives.Triangle import Triangle
+from src.primitives.Rectangle import Rectangle
+from src.textures.Texture import Texture
 from glm import vec3
 
-class Projectile(Triangle):
+class Projectile(Rectangle):
     def __init__(self, x, y, isEnemy): 
         super().__init__(
             vec3(x, y, 0), # Position
-            vec3(0.5, 0.5, 1), # Scale
-            (0, 1, 0) # Color
-            # Texture('src/textures/bullets/bullet.png')
+            vec3(0.25, 0.5, 1), # Scale
+            (1, 1, 1), # Color
+            Texture('src/textures/bullets/bullet.png')
         )
         if isEnemy:
             self.scale.y *= -1
