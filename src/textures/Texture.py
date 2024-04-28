@@ -13,6 +13,7 @@ class Texture():
         imageData = image.convert("RGBA").tobytes()
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width, image.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData)
         glGenerateMipmap(GL_TEXTURE_2D)
+        glBindTexture(GL_TEXTURE_2D, 0)
 
     def useTexture(self):
         glActiveTexture(GL_TEXTURE0)
