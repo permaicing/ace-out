@@ -10,7 +10,6 @@ class Triangle(Primitive):
         glPushMatrix()
         super().draw()
         if self.texture: #Set the texture coordinates
-            glEnable(GL_TEXTURE_2D)
             glBindTexture(GL_TEXTURE_2D, self.texture.texture)
             glBegin(GL_TRIANGLES)
             glTexCoord2f(0.0, 0.0)
@@ -20,7 +19,7 @@ class Triangle(Primitive):
             glTexCoord2f(1.0, 0.0)
             glVertex2f(0.5, -0.5)
             glEnd()
-            glDisable(GL_TEXTURE_2D)
+            glBindTexture(GL_TEXTURE_2D, 0)
         else:
             glBegin(GL_TRIANGLES)
             glVertex2f(-0.5, -0.5)

@@ -35,6 +35,7 @@ class Game:
         # Startup
         glClearColor(0, 0, 0, 1)
         glEnable(GL_MULTISAMPLE)
+        glEnable(GL_TEXTURE_2D)
 
     def keyboardSpecial(self, key, x, y):
         if key == GLUT_KEY_LEFT:
