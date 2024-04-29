@@ -126,7 +126,7 @@ class Game:
 
         # Apply upgrades
         self.ship.fireGaugeFull = 100-self.upgrades*5
-
+        self.ship.velocity = (0.2+0.03*self.upgrades)*vec3(1, 0, 0)
 
         # Drawings
         for projectile in self.projectiles:
