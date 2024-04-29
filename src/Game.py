@@ -1,10 +1,11 @@
 from random import random, uniform
 from math import sqrt
-from src.objects.Ship import Ship
 from src.primitives.Heart import Heart
 from src.primitives.Shield import Shield
+from src.objects.Ship import Ship
 from src.objects.EnemyA import EnemyA
 from src.objects.EnemyB import EnemyB
+from src.objects.Background import Background
 from src.textures.Texture import Texture
 from OpenGL.GL import *
 from OpenGL.GLUT import *
@@ -19,17 +20,9 @@ class Game:
         Texture.texs.update({
             'ship': Texture('src/textures/ships/player_ship.png'),
             'bullet': Texture('src/textures/bullets/bullet.png'),
+            'scenario': Texture('src/textures/bgs/space.png'),
         })
         
-        # Status
-        self.HP = 3
-        self.upgrades = 0
-        
-        # Objects
-        self.ship = Ship()
-        self.projectiles = []
-        self.enemies = []
-
         # Internals
         self.FPS = 60
         self.front = False
@@ -41,6 +34,17 @@ class Game:
         self.windowW = 80
         self.sceneH = 20
         self.sceneW = 20
+
+        # Status
+        self.HP = 3
+        self.upgrades = 0
+        
+        # Objects
+        self.ship = Ship()
+        self.projectiles = []
+        self.enemies = []
+        self.background = Background(Texture.texs['scenario'].texId, self.sceneW, self.sceneH)
+
 
     def keyboardSpecial(self, key, x, y):
         if key == GLUT_KEY_LEFT:
@@ -58,6 +62,8 @@ class Game:
         self.windowW = w
         self.windowH = h
         self.sceneW = self.sceneH * w / h
+
+        self.background.width = self.sceneW
         glViewport(0, 0, w, h)
 
     def timer(self, v):
@@ -83,7 +89,8 @@ class Game:
             enemy.updatePosition()
             if enemy.position.y < -self.sceneH/2-2 or abs(enemy.position.x) > self.sceneW/2+2:
                 self.enemies.remove(enemy)
-        
+        self.background.updatePosition()
+
         # Firing
         self.ship.fireGauge -= 1
         self.ship.fire(self)
@@ -129,6 +136,7 @@ class Game:
         self.ship.velocity = (0.2+0.03*self.upgrades)*vec3(1, 0, 0)
 
         # Drawings
+        self.background.draw()
         for projectile in self.projectiles:
             projectile.draw()
 
