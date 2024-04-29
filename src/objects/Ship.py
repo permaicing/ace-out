@@ -9,7 +9,7 @@ class Ship(Triangle):
             vec3(0, -8, 0), # Position
             vec3(2, 2, 1), # Scale
             (1, 1, 1), # Color
-            Texture('src/textures/ships/player_ship.png') # Texture loading
+            Texture.texs['ship'].texId # Texture loading
         )
         self.velocity = 0.2*vec3(1, 0, 0)
         self.fireGauge = 100

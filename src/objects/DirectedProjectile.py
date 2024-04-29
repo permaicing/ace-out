@@ -9,7 +9,7 @@ class DirectedProjectile(Rectangle):
             vec3(x, y, 0), # Position
             vec3(0.25, -0.5, 1), # Scale
             (1, 0.5, 0.5), # Color
-            Texture('src/textures/bullets/bullet.png')
+            Texture.texs['bullet'].texId
         )
         aux = normalize(target - self.position)
         self.velocity = 0.25*aux

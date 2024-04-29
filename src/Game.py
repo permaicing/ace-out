@@ -5,12 +5,22 @@ from src.primitives.Heart import Heart
 from src.primitives.Shield import Shield
 from src.objects.EnemyA import EnemyA
 from src.objects.EnemyB import EnemyB
+from src.textures.Texture import Texture
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from glm import vec3
 
 class Game:
     def __init__(self):
+        # Startup
+        glClearColor(0, 0, 0, 1)
+        glEnable(GL_MULTISAMPLE)
+        glEnable(GL_TEXTURE_2D)
+        Texture.texs.update({
+            'ship': Texture('src/textures/ships/player_ship.png'),
+            'bullet': Texture('src/textures/bullets/bullet.png'),
+        })
+        
         # Status
         self.HP = 3
         self.upgrades = 0
@@ -31,11 +41,6 @@ class Game:
         self.windowW = 80
         self.sceneH = 20
         self.sceneW = 20
-
-        # Startup
-        glClearColor(0, 0, 0, 1)
-        glEnable(GL_MULTISAMPLE)
-        glEnable(GL_TEXTURE_2D)
 
     def keyboardSpecial(self, key, x, y):
         if key == GLUT_KEY_LEFT:

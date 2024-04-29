@@ -10,7 +10,7 @@ class Rectangle(Primitive):
         glPushMatrix()
         super().draw()
         if self.texture: #Set the texture coordinates
-            glBindTexture(GL_TEXTURE_2D, self.texture.texture)
+            glBindTexture(GL_TEXTURE_2D, self.texture)
             glBegin(GL_QUADS)
             glTexCoord2f(0, 0)
             glVertex2f(-0.5, -0.5)

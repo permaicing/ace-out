@@ -2,9 +2,12 @@ from OpenGL.GL import *
 from PIL import Image
 
 class Texture():
+
+    texs = {}
+
     def __init__(self, filepath):
-        self.texture = glGenTextures(1)
-        glBindTexture(GL_TEXTURE_2D, self.texture)
+        self.texId = glGenTextures(1)
+        glBindTexture(GL_TEXTURE_2D, self.texId)
         glTexParameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP)
         glTexParameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP)
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
@@ -17,7 +20,7 @@ class Texture():
 
     def useTexture(self):
         glActiveTexture(GL_TEXTURE0)
-        glBindTexture(GL_TEXTURE_2D, self.texture)
+        glBindTexture(GL_TEXTURE_2D, self.texId)
 
     def destroyTexture(self):
-        glDeleteTextures(1, self.texture)
+        glDeleteTextures(1, self.texId)
