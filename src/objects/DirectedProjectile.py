@@ -8,7 +8,7 @@ class DirectedProjectile(Rectangle):
         super().__init__(
             vec3(x, y, 0), # Position
             vec3(0.25, -0.5, 1), # Scale
-            (1, 0.5, 0.5), # Color
+            (1, 0.7, 0.7), # Color
             Texture.texs['bullet'].texId
         )
         aux = normalize(target - self.position)
