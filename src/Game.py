@@ -105,9 +105,12 @@ class Game:
                 d = sqrt((projectile.position.x-self.ship.position.x)**2 + (projectile.position.y-self.ship.position.y)**2)
                 if d < 0.5:
                     self.projectiles.remove(projectile)
-                    self.HP -= 1
-                    if self.HP == 0:
-                        glutLeaveMainLoop()
+                    if self.upgrades > 0:
+                        self.upgrades -= 1
+                    else:
+                        self.HP -= 1
+                        if self.HP == 0:
+                            glutLeaveMainLoop()
 
         glutPostRedisplay()
 
