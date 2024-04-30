@@ -12,8 +12,8 @@ class Background:
         self.speed = 0.001
 
     def updatePosition(self):
-        self.position -= self.speed
-        if self.position < -1.0:
+        self.position += self.speed
+        if self.position > 1.0:
             self.position = 0.0
 
     def draw(self):
