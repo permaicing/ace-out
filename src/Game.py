@@ -103,7 +103,7 @@ class Game:
             if not projectile.isEnemy:
                 for enemy in self.enemies:
                     d = sqrt((projectile.position.x-enemy.position.x)**2 + (projectile.position.y-enemy.position.y)**2)
-                    if d <= 0.8:
+                    if d <= 0.9:
                         self.upgrades = min(self.upgrades+1, 10)
                         self.enemies.remove(enemy)
                         self.projectiles.remove(projectile)
