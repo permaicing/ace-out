@@ -20,7 +20,7 @@ class Game:
         Texture.texs.update({
             'ship': Texture('src/textures/ships/player_ship.png'),
             'bullet': Texture('src/textures/bullets/bullet.png'),
-            'scenario': Texture('src/textures/bgs/space.png'),
+            'scenario': Texture('src/textures/bgs/space.png', GL_REPEAT),
         })
         
         # Internals
