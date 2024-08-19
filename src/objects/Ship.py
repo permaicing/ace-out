@@ -16,10 +16,10 @@ class Ship(Triangle):
         self.fireGaugeFull = 100
     
     def updatePosition(self, game):
-        if game.right and self.position.x <= game.sceneW/2-1.15:
+        if game.right and self.position.x <= game.sceneW:
             self.position += self.velocity
             
-        if game.left and self.position.x >= -game.sceneW/2+1.15:
+        if game.left and self.position.x >= -game.sceneW:
             self.position -= self.velocity
 
     def fire(self, game):

@@ -9,7 +9,7 @@ from src.objects.Background import Background
 from src.textures.Texture import Texture
 from OpenGL.GL import *
 from OpenGL.GLUT import *
-from glm import vec3
+from glm import *
 
 class Game:
     def __init__(self):
@@ -43,8 +43,19 @@ class Game:
         self.ship = Ship()
         self.projectiles = []
         self.enemies = []
-        self.background = Background(Texture.texs['scenario'].texId, self.sceneW, self.sceneH)
+        self.background = Background(Texture.texs['scenario'].texId, self.sceneW)
 
+        self.camPos = self.ship.position; 
+
+        self.lightPosition = vec3(-100,100,100)  
+        self.lightAmbient = vec3(0.1)                                     
+        self.lightDiffuse = vec3(1.0)                                     
+        self.lightSpecular = vec3(1.0)
+
+        self.objectsAmbient = vec3(0.1)                                   
+        self.objectsDiffuse = vec3(0,1,1)                                 
+        self.objectsSpecular = vec3(0.5)                                  
+        self.objectsShine = 128                                                 
 
     def keyboardSpecial(self, key, x, y):
         if key == GLUT_KEY_LEFT:
@@ -65,6 +76,21 @@ class Game:
 
         self.background.width = self.sceneW
         glViewport(0, 0, w, h)
+
+    def shading(point, normal):
+        shadeAmbient = lightAmbient * surfaceAmbient
+
+        l = glm.normalize(lightPosition - point)
+        n = glm.normalize(normal)
+        shadeDiffuse = lightDiffuse * surfaceDiffuse * glm.max(0.0, glm.dot(l,n))
+
+        v = glm.normalize(cameraPosition - point)
+        r = 2*glm.dot(n,l)*n - l
+        shadeSpecular = lightSpecular * surfaceSpecular * glm.max(0, glm.dot(v,r) ** surfaceShine)
+
+        shade = shadeAmbient + shadeDiffuse + shadeSpecular
+
+        return shade
 
     def timer(self, v):
         glutTimerFunc(int(1000 / self.FPS), self.timer, 0)
@@ -87,7 +113,7 @@ class Game:
         
         for enemy in self.enemies:
             enemy.updatePosition()
-            if enemy.position.y < -self.sceneH/2-2 or abs(enemy.position.x) > self.sceneW/2+2:
+            if enemy.position.y < -self.sceneH or abs(enemy.position.x) > self.sceneW:
                 self.enemies.remove(enemy)
         self.background.updatePosition()
 
@@ -121,21 +147,67 @@ class Game:
 
         glutPostRedisplay()
 
+    def drawHUD(self):
+        # Salva a matriz de projeção atual
+        glMatrixMode(GL_PROJECTION)
+        glPushMatrix()
+        glLoadIdentity()
+
+        # Configura a projeção ortográfica para a HUD
+        glOrtho(0, self.windowW, 0, self.windowH, -1, 1)
+        glMatrixMode(GL_MODELVIEW)
+        glPushMatrix()
+        glLoadIdentity()
+
+        # Desenha a HUD
+        for i in range(self.HP):
+            Heart(
+                vec3(15 + i * 30, self.windowH - 45, 0),
+                vec3(25, 25, 1),
+                (1, 0, 1)
+            ).draw()
+
+        for i in range(int(self.upgrades)):
+            Shield(
+                vec3(self.windowW - 45 - i * 30, self.windowH - 45, 0),
+                vec3(25, 25, 1),
+                (0, 1, 1)
+            ).draw()
+
+        # Restaura as matrizes anteriores
+        glPopMatrix()
+        glMatrixMode(GL_PROJECTION)
+        glPopMatrix()
+        glMatrixMode(GL_MODELVIEW)
+
+
+    def mat2list(self, M):
+        matrix = []
+        for i in range(0,4):
+            matrix.append(list(M[i]))
+        return matrix
+
     def run(self):
-        glClear(GL_COLOR_BUFFER_BIT)
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
-        glOrtho(-self.sceneW / 2, self.sceneW / 2, -self.sceneH / 2, self.sceneH / 2, -1, 1)
+        aspect_ratio = self.windowW / self.windowH
+        glFrustum(-aspect_ratio, aspect_ratio, -1, 1, 1, 100)
 
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
 
-        # Apply upgrades
-        self.ship.fireGaugeFull = 100-self.upgrades*5
-        self.ship.velocity = (0.2+0.03*self.upgrades)*vec3(1, 0, 0)
+        camPos = self.ship.position + vec3(0, -3.5, 2)
+        targetPos = self.ship.position + vec3(0, 1000, 0)
+        upDir = vec3(0, 0, 1)
 
-        # Drawings
+        matrizCamera = lookAt(camPos, targetPos, upDir)
+        glLoadMatrixf(self.mat2list(matrizCamera))
+
+        self.ship.fireGaugeFull = 100 - self.upgrades * 5
+        self.ship.velocity = (0.2 + 0.03 * self.upgrades) * vec3(1, 0, 0)
+
         self.background.draw()
         for projectile in self.projectiles:
             projectile.draw()
@@ -143,18 +215,8 @@ class Game:
         self.ship.draw()
         for enemy in self.enemies:
             enemy.draw()
-        
-        for i in range(self.HP):
-            Heart(
-                vec3(-self.sceneW/2+1.15+i*0.6, self.sceneH/2-1.15, 1),
-                vec3(0.5, 0.5, 1),
-                (1, 0, 1)
-            ).draw()
-        for i in range(self.upgrades):
-            Shield(
-                vec3(self.sceneW/2-1.15-i*0.6, self.sceneH/2-1.15, 1),
-                vec3(0.5, 0.5, 1),
-                (0, 1, 1)
-            ).draw()
-        
+
+        # Desenha a HUD em 2D
+        self.drawHUD()
+
         glutSwapBuffers()

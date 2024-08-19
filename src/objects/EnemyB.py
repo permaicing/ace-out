@@ -6,7 +6,7 @@ from glm import vec3, normalize
 class EnemyB(Eneagon):
     def __init__(self, x):
         super().__init__(
-            vec3(x, 8, 0), # Position
+            vec3(x, 12, 0), # Position
             vec3(1.5, 1.5, 1), # Scale
             (1, 0, 0), # Color
             6 # N_sides

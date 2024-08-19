@@ -1,4 +1,5 @@
 from OpenGL.GLUT import *
+from OpenGL.GL import *
 from src.Game import Game
 from src.textures.Texture import Texture
 
@@ -6,6 +7,7 @@ if __name__ == '__main__':
     glutInit()
     glutInitDisplayMode(GLUT_MULTISAMPLE | GLUT_DOUBLE | GLUT_RGBA)
     glutCreateWindow('Ace-Out')
+    glEnable(GL_DEPTH_TEST)
 
     game = Game()
     glutInitWindowSize(game.windowW, game.windowH)
