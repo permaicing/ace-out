@@ -58,15 +58,19 @@ class Background:
         glTexCoord2f(1.0 + self.position, 0.0)
         glVertex3f(self.size, self.size, -self.size)
 
-        # Face superior (movimento de textura do centro para fora)
-        glTexCoord2f(0.5 - self.position, 0.5 - self.position)
+
+        # Face superior (textura estática)
+        glTexCoord2f(0.0, 0.0)
         glVertex3f(-self.size, self.size, -self.size)
-        glTexCoord2f(0.5 + self.position, 0.5 - self.position)
+        glTexCoord2f(1.0, 0.0)
         glVertex3f(self.size, self.size, -self.size)
-        glTexCoord2f(0.5 + self.position, 0.5 + self.position)
+        glTexCoord2f(1.0, 1.0)
         glVertex3f(self.size, self.size, self.size)
-        glTexCoord2f(0.5 - self.position, 0.5 + self.position)
+        glTexCoord2f(0.0, 1.0)
         glVertex3f(-self.size, self.size, self.size)
+
+
+
 
         # Face inferior (movimento de textura para trás)
         glTexCoord2f(self.position, 0.0)
