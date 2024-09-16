@@ -10,6 +10,7 @@ from src.textures.Texture import Texture
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from glm import *
+import glm
 
 class Game:
     def __init__(self):
@@ -45,17 +46,11 @@ class Game:
         self.enemies = []
         self.background = Background(Texture.texs['scenario'].texId, self.sceneW)
 
-        self.camPos = self.ship.position; 
-
-        self.lightPosition = vec3(-100,100,100)  
-        self.lightAmbient = vec3(0.1)                                     
-        self.lightDiffuse = vec3(1.0)                                     
-        self.lightSpecular = vec3(1.0)
-
-        self.objectsAmbient = vec3(0.1)                                   
-        self.objectsDiffuse = vec3(0,1,1)                                 
-        self.objectsSpecular = vec3(0.5)                                  
-        self.objectsShine = 128                                                 
+        self.camPos = self.ship.position        
+        self.lightPosition = glm.vec3(30, 30, 20)  # Posição da fonte de luz
+        self.lightAmbient = glm.vec3(0.1)       # Propriedade ambiente da fonte de luz
+        self.lightDiffuse = glm.vec3(1.0)       # Propriedade difusa da fonte de luz
+        self.lightSpecular = glm.vec3(1.0)      # Propriedade especular da fonte de luz                                              
 
     def keyboardSpecial(self, key, x, y):
         if key == GLUT_KEY_LEFT:
@@ -76,21 +71,6 @@ class Game:
 
         self.background.width = self.sceneW
         glViewport(0, 0, w, h)
-
-    def shading(point, normal):
-        shadeAmbient = lightAmbient * surfaceAmbient
-
-        l = glm.normalize(lightPosition - point)
-        n = glm.normalize(normal)
-        shadeDiffuse = lightDiffuse * surfaceDiffuse * glm.max(0.0, glm.dot(l,n))
-
-        v = glm.normalize(cameraPosition - point)
-        r = 2*glm.dot(n,l)*n - l
-        shadeSpecular = lightSpecular * surfaceSpecular * glm.max(0, glm.dot(v,r) ** surfaceShine)
-
-        shade = shadeAmbient + shadeDiffuse + shadeSpecular
-
-        return shade
 
     def timer(self, v):
         glutTimerFunc(int(1000 / self.FPS), self.timer, 0)
@@ -180,7 +160,6 @@ class Game:
         glPopMatrix()
         glMatrixMode(GL_MODELVIEW)
 
-
     def mat2list(self, M):
         matrix = []
         for i in range(0,4):
@@ -188,6 +167,12 @@ class Game:
         return matrix
 
     def run(self):
+        # Habilitar o teste de profundidade
+        glEnable(GL_DEPTH_TEST)
+        
+        # Definir o teste de profundidade para desenhar apenas se o novo valor for menor
+        glDepthFunc(GL_LESS)
+        
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
         glMatrixMode(GL_PROJECTION)
@@ -198,25 +183,42 @@ class Game:
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
 
-        camPos = self.ship.position + vec3(0, -3.5, 2)
-        targetPos = self.ship.position + vec3(0, 1000, 0)
-        upDir = vec3(0, 0, 1)
+        # Ajuste na posição da câmera e direção
+        camPos = self.ship.position + vec3(0, -3.5, 3)
+        targetPos = self.ship.position + vec3(0, 10, 0)
+        upDir = vec3(0, 1, 0)
 
         matrizCamera = lookAt(camPos, targetPos, upDir)
         glLoadMatrixf(self.mat2list(matrizCamera))
 
+        # Atualizações na nave
         self.ship.fireGaugeFull = 100 - self.upgrades * 5
         self.ship.velocity = (0.2 + 0.03 * self.upgrades) * vec3(1, 0, 0)
 
+        # Desenhar o background
         self.background.draw()
+
+        # Desenhar projéteis
         for projectile in self.projectiles:
             projectile.draw()
 
+        # Desenhar a nave
         self.ship.draw()
-        for enemy in self.enemies:
-            enemy.draw()
 
-        # Desenha a HUD em 2D
+        # Desenhar inimigos
+        for enemy in self.enemies:
+            enemy.draw(self)
+
+        # Desenhar a fonte de luz
+        glColor3f(1, 1, 0)
+        glPointSize(20)
+        glBegin(GL_POINTS)
+        glVertex3f(self.lightPosition.x, self.lightPosition.y, self.lightPosition.z)
+        glEnd()
+
+        # Desenha a HUD (em 2D, sem profundidade)
+        glDisable(GL_DEPTH_TEST)
         self.drawHUD()
+        glEnable(GL_DEPTH_TEST)
 
         glutSwapBuffers()

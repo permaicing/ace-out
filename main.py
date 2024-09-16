@@ -5,9 +5,8 @@ from src.textures.Texture import Texture
 
 if __name__ == '__main__':
     glutInit()
-    glutInitDisplayMode(GLUT_MULTISAMPLE | GLUT_DOUBLE | GLUT_RGBA)
+    glutInitDisplayMode(GLUT_MULTISAMPLE | GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH)
     glutCreateWindow('Ace-Out')
-    glEnable(GL_DEPTH_TEST)
 
     game = Game()
     glutInitWindowSize(game.windowW, game.windowH)
