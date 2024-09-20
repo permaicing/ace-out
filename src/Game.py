@@ -19,7 +19,7 @@ class Game:
         glEnable(GL_MULTISAMPLE)
         glEnable(GL_TEXTURE_2D)
         Texture.texs.update({
-            'ship': Texture('src/textures/ships/player_ship.png'),
+            # 'ship': Texture('src/textures/ships/player_ship.png'),
             'bullet': Texture('src/textures/bullets/bullet.png'),
             'scenario': Texture('src/textures/bgs/space.png', GL_REPEAT),
         })
@@ -41,7 +41,7 @@ class Game:
         self.upgrades = 0
         
         # Objects
-        self.ship = Ship()
+        self.ship = Ship("src/models/player/player_ship.obj", "src/models/player/player_ship.mtl")
         self.projectiles = []
         self.enemies = []
         self.background = Background(Texture.texs['scenario'].texId, self.sceneW)
@@ -207,7 +207,7 @@ class Game:
 
         # Desenhar inimigos
         for enemy in self.enemies:
-            enemy.draw(self)
+            enemy.draw()
 
         # Desenhar a fonte de luz
         glColor3f(1, 1, 0)
