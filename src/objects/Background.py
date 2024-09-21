@@ -18,7 +18,7 @@ class Background:
 
         glBegin(GL_QUADS)
 
-        glColor3f(0.3, 0.1, 0.6)
+        glColor3f(1.0, 1.0, 1.0)
 
         # Face dianteira (movimento de textura para trás)
         glTexCoord2f(self.position, 0.0)
