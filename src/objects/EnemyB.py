@@ -3,15 +3,19 @@ from src.primitives.Eneagon import Eneagon
 from src.objects.Projectile import Projectile
 from src.objects.Mesh import Mesh
 from glm import vec3, normalize, vec4
+import glm
 
 class EnemyB(Mesh):
-    def __init__(self, x, objFilepath = "src/models/enemies/enemyB.obj", mtlFilepath = "src/models/enemies/enemyB.mtl"):
-        super().__init__(objFilepath, mtlFilepath)
-        self.position = vec3(x, 12, 0) #colisao so esta contando na asa esquerda para esse unimigo
+    def __init__(self, x, objFilepath="src/models/enemies/enemyB.obj", mtlFilepath="src/models/enemies/enemyB.mtl"):
+        ambient = glm.vec3(0.0, 0.2, 0.0)
+        diffuse = glm.vec3(0.0, 0.8, 0.0)
+        specular = glm.vec3(1.0, 1.0, 1.0)
+        shine = 16.0
+        super().__init__(objFilepath, mtlFilepath, ambient=ambient, diffuse=diffuse, specular=specular, shine=shine)
+        self.position = vec3(x, 12, 0)
         self.scale = vec3(1, 1, 1)
         self.rotation = vec4(1, 0, 0, 90)
-        self.velocity = 0.05*normalize(vec3(uniform(-1, 1), -1, 0))
-        self.scale_delta = 0.01
+        self.velocity = 0.05 * normalize(vec3(uniform(-1, 1), -1, 0))
         self.fireGauge = 0
         self.fireGaugeFull = 200
         
@@ -28,3 +32,6 @@ class EnemyB(Mesh):
                 Projectile(self.position.x, self.position.y, True)
             )
             self.fireGauge = self.fireGaugeFull
+
+    def draw(self, game):
+        super().draw(game)

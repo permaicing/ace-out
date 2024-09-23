@@ -11,6 +11,7 @@ from OpenGL.GL import *
 from OpenGL.GLUT import *
 from glm import *
 import glm
+import math
 
 class Game:
     def __init__(self):
@@ -47,10 +48,12 @@ class Game:
         self.background = Background(Texture.texs['scenario'].texId, self.sceneW)
 
         self.camPos = self.ship.position        
-        self.lightPosition = glm.vec3(30, 30, 20)  # Posição da fonte de luz
+        self.lightPosition = glm.vec3(0, -20, 0)  # Posição da fonte de luz
         self.lightAmbient = glm.vec3(0.1)       # Propriedade ambiente da fonte de luz
         self.lightDiffuse = glm.vec3(1.0)       # Propriedade difusa da fonte de luz
         self.lightSpecular = glm.vec3(1.0)      # Propriedade especular da fonte de luz                                              
+
+        self.lightAngle = 0  # Ângulo inicial para movimento circular
 
     def keyboardSpecial(self, key, x, y):
         if key == GLUT_KEY_LEFT:
@@ -125,6 +128,11 @@ class Game:
                         if self.HP == 0:
                             glutLeaveMainLoop()
 
+        # Atualizar a posição da luz
+        self.lightAngle += 0.01  # Ajuste a velocidade conforme necessário
+        self.lightPosition.x = 10 * math.cos(self.lightAngle)
+        self.lightPosition.y = 10 * math.sin(self.lightAngle)
+
         glutPostRedisplay()
 
     def drawHUD(self):
@@ -170,6 +178,11 @@ class Game:
         # Habilitar o teste de profundidade
         glEnable(GL_DEPTH_TEST)
         
+        # Habilitar o back-face culling
+        glEnable(GL_CULL_FACE)
+        glCullFace(GL_BACK)
+        glFrontFace(GL_CCW)
+
         # Definir o teste de profundidade para desenhar apenas se o novo valor for menor
         glDepthFunc(GL_LESS)
         
@@ -191,23 +204,25 @@ class Game:
         matrizCamera = lookAt(camPos, targetPos, upDir)
         glLoadMatrixf(self.mat2list(matrizCamera))
 
+        # Desabilitar o culling temporariamente para desenhar o skybox
+        glDisable(GL_CULL_FACE)
+        self.background.draw()
+        glEnable(GL_CULL_FACE)
+
         # Atualizações na nave
         self.ship.fireGaugeFull = 100 - self.upgrades * 5
         self.ship.velocity = (0.2 + 0.03 * self.upgrades) * vec3(1, 0, 0)
-
-        # Desenhar o background
-        self.background.draw()
 
         # Desenhar projéteis
         for projectile in self.projectiles:
             projectile.draw()
 
         # Desenhar a nave
-        self.ship.draw()
+        self.ship.draw(self)
 
         # Desenhar inimigos
         for enemy in self.enemies:
-            enemy.draw()
+            enemy.draw(self)
 
         # Desenhar a fonte de luz
         glColor3f(1, 1, 0)
@@ -216,9 +231,11 @@ class Game:
         glVertex3f(self.lightPosition.x, self.lightPosition.y, self.lightPosition.z)
         glEnd()
 
+        glDisable(GL_CULL_FACE)
         # Desenha a HUD (em 2D, sem profundidade)
         glDisable(GL_DEPTH_TEST)
         self.drawHUD()
         glEnable(GL_DEPTH_TEST)
+        glEnable(GL_CULL_FACE)
 
         glutSwapBuffers()

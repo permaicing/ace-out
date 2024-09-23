@@ -1,18 +1,24 @@
 from OpenGL.GL import *
 import numpy as np
 import glm
-from OpenGL.arrays import vbo
 
 class Mesh:
-    def __init__(self, objFilepath, mtlFilepath):
+    def __init__(self, objFilepath, mtlFilepath, shading_frequency=10, ambient=None, diffuse=None, specular=None, shine=32.0):
         self.vertices = self.loadObjectFile(objFilepath)
         self.position = glm.vec3(0, 0, 0)
         self.scale = glm.vec3(1, 1, 1)
         self.rotation = glm.vec4(0, 0, 1, 0)
-        # self.materials = {}
-        # self.currentMaterial = None
-        # self.loadMaterialsFile(mtlFilepath)
-        self.vbo = vbo.VBO(np.array(self.vertices, dtype=np.float32))
+
+        # Definições de materiais (agora podem ser passadas como parâmetros)
+        self.objectAmbient = ambient if ambient else glm.vec3(0.2, 0.2, 0.2)
+        self.objectDiffuse = diffuse if diffuse else glm.vec3(0.8, 0.8, 0.8)
+        self.objectSpecular = specular if specular else glm.vec3(1.0, 1.0, 1.0)
+        self.objectShine = shine
+
+        # Cores e renderização
+        self.colors = []  # Lista para armazenar as cores calculadas
+        self.shading_frequency = shading_frequency
+        self.render_count = 0  # Contador de renderizações
 
     def readVertex(self, words):
         return [float(words[1]), float(words[2]), float(words[3])]
@@ -45,8 +51,7 @@ class Mesh:
         vn = []
         vertices = []
         with open(filename, "r") as file:
-            line = file.readline()
-            while line:
+            for line in file:
                 words = line.split()
                 match words[0]:
                     case "v":
@@ -57,85 +62,64 @@ class Mesh:
                         vn.append(self.readNormal(words))
                     case "f":
                         self.readFace(words, v, vt, vn, vertices)
-                line = file.readline()
 
         return vertices
-    
-    """
-   
-    def readMaterial(self, words):
-        return words[1]
-    
-    def readColor(self, words):
-        return [float(words[1]), float(words[2]), float(words[3])]
-    
-    def readShininess(self, words):
-        return float(words[1])
 
-    def readIllum(self, words):
-        return int(words[1])
+    def shading(self, point, normal, game):
+        shadeAmbient = game.lightAmbient * self.objectAmbient
 
-    def loadMaterialsFile(self, filename):
-        currentMaterial = None
-        with open(filename, "r") as file:
-            line = file.readline()
-            while line:
-                words = line.split()
-                match words[0]:
-                    case "newmtl":
-                        currentMaterial = self.readMaterial(words)
-                        self.materials[currentMaterial] = {}
-                    case "Ns":
-                        self.materials[currentMaterial]['shininess'] = self.readShininess(words)
-                    case "Ka":
-                        self.materials[currentMaterial]['ambient'] = self.readColor(words)
-                    case "Kd":
-                        self.materials[currentMaterial]['diffuse'] = self.readColor(words)
-                    case "Ks":
-                        self.materials[currentMaterial]['specular'] = self.readColor(words)
-                    case "Ke":
-                        self.materials[currentMaterial]['emissive'] = self.readColor(words)
-                    case "Ni":
-                        self.materials[currentMaterial]['optical_density'] = float(words[1])
-                    case "d":
-                        self.materials[currentMaterial]['dissolve'] = float(words[1])
-                    case "illum":
-                        self.materials[currentMaterial]['illumination_model'] = self.readIllum(words)
-                        
-    """
+        l = glm.normalize(game.lightPosition - point)
+        n = glm.normalize(normal)
+        shadeDiffuse = game.lightDiffuse * self.objectDiffuse * glm.max(0.0, glm.dot(l, n))
 
-    def draw(self):
+        v = glm.normalize(game.camPos - point)
+        r = 2 * glm.dot(n, l) * n - l
+        shadeSpecular = game.lightSpecular * self.objectSpecular * glm.max(0, glm.dot(v, r) ** self.objectShine)
+
+        shade = shadeAmbient + shadeDiffuse + shadeSpecular
+        return shade
+
+    def draw(self, game):
         glPushMatrix()
         glTranslatef(self.position.x, self.position.y, self.position.z)
         glScalef(self.scale.x, self.scale.y, self.scale.z)
         glRotatef(self.rotation.w, self.rotation.x, self.rotation.y, self.rotation.z)
 
-        #luz temporaria para debug
-        glEnable(GL_LIGHTING)
-        glEnable(GL_LIGHT0)
-        # for material, properties in self.materials.items():
-        #     glMaterialfv(GL_FRONT, GL_AMBIENT, properties['ambient'])
-        #     glMaterialfv(GL_FRONT, GL_DIFFUSE, properties['diffuse'])
-        #     glMaterialfv(GL_FRONT, GL_SPECULAR, properties['specular'])
-        #     glMaterialfv(GL_FRONT, GL_EMISSION, properties['emission'])
-        #     glMaterialf(GL_FRONT, GL_SHININESS, properties['shininess'])
+        vertices = []  # Reinicializa a lista de vértices
+        if self.render_count % self.shading_frequency == 0:
+            self.colors.clear()  # Limpa a lista de cores antes de recalcular
+            for i in range(0, len(self.vertices), 8):
+                vertex = glm.vec3(self.vertices[i], self.vertices[i + 1], self.vertices[i + 2])
+                normal = glm.vec3(self.vertices[i + 5], self.vertices[i + 6], self.vertices[i + 7])
+                
+                # Atualizando a posição do vértice
+                vertices.extend([vertex.x, vertex.y, vertex.z])
+                
+                # Recalcular a cor se for o momento de recalcular
+                color = self.shading(vertex, normal, game)
+                self.colors.extend([color.r, color.g, color.b])
+        else:
+            # Reutilizando cores previamente calculadas, mas atualizando os vértices
+            for i in range(0, len(self.vertices), 8):
+                vertex = glm.vec3(self.vertices[i], self.vertices[i + 1], self.vertices[i + 2])
+                vertices.extend([vertex.x, vertex.y, vertex.z])
 
-        self.vbo.bind()
+        # Convertendo listas para arrays numpy
+        vertices_array = np.array(vertices, dtype=np.float32)
+        colors_array = np.array(self.colors, dtype=np.float32)
+
+        # Desenho
         glEnableClientState(GL_VERTEX_ARRAY)
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY)
-        glEnableClientState(GL_NORMAL_ARRAY)
+        glEnableClientState(GL_COLOR_ARRAY)
 
-        glVertexPointer(3, GL_FLOAT, 32, self.vbo)
-        glTexCoordPointer(2, GL_FLOAT, 32, self.vbo + 12)
-        glNormalPointer(GL_FLOAT, 32, self.vbo + 20)
-        glDrawArrays(GL_TRIANGLES, 0, len(self.vertices) // 8)
+        glVertexPointer(3, GL_FLOAT, 0, vertices_array)
+        glColorPointer(3, GL_FLOAT, 0, colors_array)
+
+        glDrawArrays(GL_TRIANGLES, 0, len(vertices) // 3)
 
         glDisableClientState(GL_VERTEX_ARRAY)
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY)
-        glDisableClientState(GL_NORMAL_ARRAY)
-        self.vbo.unbind()
-
-        glDisable(GL_LIGHTING)
-        glDisable(GL_LIGHT0)
+        glDisableClientState(GL_COLOR_ARRAY)
 
         glPopMatrix()
+
+        self.render_count += 1  # Incrementa o contador de renderizações
