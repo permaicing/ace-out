@@ -21,9 +21,12 @@ class Ship(Mesh):
     def updatePosition(self, game):
         if game.right and self.position.x <= game.sceneW:
             self.position += self.velocity
-            
+            self.rotation.w += 5
         if game.left and self.position.x >= -game.sceneW:
             self.position -= self.velocity
+            self.rotation.w -= 5
+        elif abs(self.rotation.w) % 360 != 0:
+            self.rotation.w -= abs(self.rotation.w)/self.rotation.w
 
     def fire(self, game):
         if self.fireGauge <= 0:
