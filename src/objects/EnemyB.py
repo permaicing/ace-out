@@ -3,6 +3,7 @@ from src.primitives.Eneagon import Eneagon
 from src.objects.Projectile import Projectile
 from src.objects.Mesh import Mesh
 from glm import vec3, normalize, vec4
+from math import degrees, acos
 import glm
 
 class EnemyB(Mesh):
@@ -15,7 +16,9 @@ class EnemyB(Mesh):
         self.position = vec3(x, 12, 0)
         self.scale = vec3(1, 1, 1)
         self.rotation = vec4(0, 0, 1, 0)
-        self.velocity = 0.05 * normalize(vec3(uniform(-1, 1), -1, 0))
+        aux = normalize(vec3(uniform(-1, 1), -1, 0))
+        self.velocity = 0.05 * aux
+        self.rotation.w = 90 - degrees(acos(aux.x))
         self.fireGauge = 0
         self.fireGaugeFull = 200
         
