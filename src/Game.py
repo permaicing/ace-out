@@ -213,9 +213,11 @@ class Game:
         self.ship.fireGaugeFull = 100 - self.upgrades * 5
         self.ship.velocity = (0.2 + 0.03 * self.upgrades) * vec3(1, 0, 0)
 
-        # Desenhar projéteis
+        # Desenhar projéteis, também sem culling
+        glDisable(GL_CULL_FACE)
         for projectile in self.projectiles:
             projectile.draw()
+        glEnable(GL_CULL_FACE)
 
         # Desenhar a nave
         self.ship.draw(self)
