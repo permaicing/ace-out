@@ -14,7 +14,7 @@ class DirectedProjectile(Rectangle):
 
         super().__init__(
             vec3(x, y, 0),               
-            vec3(0.25, -0.5, 1),         
+            vec3(0.1, -0.6, 0.2),         
             (1, 0.7, 0.7),                
             objectAmbient,               
             objectDiffuse,               
