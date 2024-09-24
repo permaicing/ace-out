@@ -111,15 +111,16 @@ class Game:
         for projectile in self.projectiles:
             if not projectile.isEnemy:
                 for enemy in self.enemies:
-                    d = sqrt((projectile.position.x-enemy.position.x)**2 + (projectile.position.y-enemy.position.y)**2)
-                    if d <= 0.9:
+                    d = distance(projectile.position, enemy.position)
+                    if (d <= 1 and isinstance(enemy, EnemyA) or \
+                        d <= 1.25 and isinstance(enemy, EnemyB)):
                         self.upgrades = min(self.upgrades+1, 10)
                         self.enemies.remove(enemy)
                         self.projectiles.remove(projectile)
                         break
             else:
-                d = sqrt((projectile.position.x-self.ship.position.x)**2 + (projectile.position.y-self.ship.position.y)**2)
-                if d < 0.5:
+                d = distance(projectile.position, self.ship.position)
+                if d <= 0.5:
                     self.projectiles.remove(projectile)
                     if self.upgrades > 0:
                         self.upgrades -= 1
