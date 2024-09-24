@@ -10,7 +10,7 @@ class Ship(Mesh):
         diffuse = glm.vec3(0.2, 0.2, 0.8)
         specular = glm.vec3(1.0, 1.0, 1.0)
         shine = 16.0
-        super().__init__(objFilepath, mtlFilepath, ambient=ambient, diffuse=diffuse, specular=specular, shine=shine)
+        super().__init__(objFilepath, mtlFilepath, shading_frequency=1, ambient=ambient, diffuse=diffuse, specular=specular, shine=shine)
         self.position = glm.vec3(0, -8, 0)
         self.scale = glm.vec3(0.35, 0.35, 0.35)
         self.rotation = glm.vec4(0, 1, 0, 0)
