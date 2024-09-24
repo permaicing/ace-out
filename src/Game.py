@@ -114,7 +114,7 @@ class Game:
                     d = distance(projectile.position, enemy.position)
                     if (d <= 1 and isinstance(enemy, EnemyA) or \
                         d <= 1.25 and isinstance(enemy, EnemyB)):
-                        self.upgrades = min(self.upgrades+1, 10)
+                        self.upgrades = min(self.upgrades+1, 3)
                         self.enemies.remove(enemy)
                         self.projectiles.remove(projectile)
                         break
