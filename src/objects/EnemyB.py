@@ -14,7 +14,7 @@ class EnemyB(Mesh):
         super().__init__(objFilepath, mtlFilepath, ambient=ambient, diffuse=diffuse, specular=specular, shine=shine)
         self.position = vec3(x, 12, 0)
         self.scale = vec3(1, 1, 1)
-        self.rotation = vec4(1, 0, 0, 90)
+        self.rotation = vec4(0, 0, 1, 0)
         self.velocity = 0.05 * normalize(vec3(uniform(-1, 1), -1, 0))
         self.fireGauge = 0
         self.fireGaugeFull = 200

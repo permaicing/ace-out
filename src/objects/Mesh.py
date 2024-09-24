@@ -3,11 +3,12 @@ import numpy as np
 import glm
 
 class Mesh:
-    def __init__(self, objFilepath, mtlFilepath, shading_frequency=10, ambient=None, diffuse=None, specular=None, shine=32.0):
+    def __init__(self, objFilepath, mtlFilepath, shading_frequency=10, ambient=None, diffuse=None, specular=None, shine=32.0, correctionAngle=90):
         self.vertices = self.loadObjectFile(objFilepath)
         self.position = glm.vec3(0, 0, 0)
         self.scale = glm.vec3(1, 1, 1)
         self.rotation = glm.vec4(0, 0, 1, 0)
+        self.correctionAngle = correctionAngle
 
         # Definições de materiais (agora podem ser passadas como parâmetros)
         self.objectAmbient = ambient if ambient else glm.vec3(0.2, 0.2, 0.2)
@@ -84,6 +85,7 @@ class Mesh:
         glTranslatef(self.position.x, self.position.y, self.position.z)
         glScalef(self.scale.x, self.scale.y, self.scale.z)
         glRotatef(self.rotation.w, self.rotation.x, self.rotation.y, self.rotation.z)
+        glRotatef(self.correctionAngle, 1, 0, 0) # Due to Y-Z axes being inverted
 
         vertices = []  # Reinicializa a lista de vértices
         if self.render_count % self.shading_frequency == 0:

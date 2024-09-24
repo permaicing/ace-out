@@ -13,17 +13,16 @@ class EnemyA(Mesh):
         super().__init__(objFilepath, mtlFilepath, ambient=ambient, diffuse=diffuse, specular=specular, shine=shine)
         self.position = vec3(x, 12, 0)
         self.scale = vec3(0.8, 0.8, 0.8)
-        self.rotation = vec4(1, 0, 0, 90)
+        self.rotation = vec4(0, 0, 1, 0)
         self.velocity = 0.05 * vec3(0, -1, 0)
         self.fireGauge = 0
         self.fireGaugeFull = 200
         
     def updatePosition(self):
-        # self.rotation.w -= 0.5
-        # if abs(self.rotation.w) >= 360:
-        #     self.rotation.w = 0
+        self.rotation.w -= 0.5
+        if abs(self.rotation.w) >= 360:
+            self.rotation.w -= 360
         self.position += self.velocity
-        #TODO: consertar a rotacao da nave
 
 
     def fire(self, game):
