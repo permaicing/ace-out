@@ -3,7 +3,7 @@ import numpy as np
 import glm
 
 class Mesh:
-    def __init__(self, objFilepath, mtlFilepath, shading_frequency=10, ambient=None, diffuse=None, specular=None, shine=32.0, correctionAngle=90):
+    def __init__(self, objFilepath, mtlFilepath, shading_frequency=30, ambient=None, diffuse=None, specular=None, shine=32.0, correctionAngle=90):
         self.vertices = self.loadObjectFile(objFilepath)
         self.position = glm.vec3(0, 0, 0)
         self.scale = glm.vec3(1, 1, 1)
@@ -106,7 +106,6 @@ class Mesh:
                 vertex = glm.vec3(self.vertices[i], self.vertices[i + 1], self.vertices[i + 2])
                 vertices.extend([vertex.x, vertex.y, vertex.z])
 
-        # Convertendo listas para arrays numpy
         vertices_array = np.array(vertices, dtype=np.float32)
         colors_array = np.array(self.colors, dtype=np.float32)
 

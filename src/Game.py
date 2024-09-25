@@ -25,7 +25,6 @@ class Game:
             'scenario': Texture('src/textures/bgs/space.png', GL_REPEAT),
         })
         
-        # Internals
         self.FPS = 60
         self.front = False
         self.back = False
@@ -48,12 +47,12 @@ class Game:
         self.background = Background(Texture.texs['scenario'].texId, self.sceneW)
 
         self.camPos = self.ship.position        
-        self.lightPosition = glm.vec3(0, -20, 0)  # Posição da fonte de luz
+        self.lightPosition = glm.vec3(-20, -20, 5)  # Posição da fonte de luz
         self.lightAmbient = glm.vec3(0.1)       # Propriedade ambiente da fonte de luz
         self.lightDiffuse = glm.vec3(1.0)       # Propriedade difusa da fonte de luz
         self.lightSpecular = glm.vec3(1.0)      # Propriedade especular da fonte de luz                                              
 
-        self.lightAngle = 0  # Ângulo inicial para movimento circular
+        self.lightAngle = 0  # angulo inicial para movimento da luz
 
     def keyboardSpecial(self, key, x, y):
         if key == GLUT_KEY_LEFT:
@@ -80,11 +79,12 @@ class Game:
         
         # Spawn enemies
         if random() < 0.005:
-            posX = uniform(-self.sceneW/2+1.15, self.sceneW/2-1.15)
-            if random() < 0.45:
-                self.enemies.append(EnemyA(posX))
-            else:
-                self.enemies.append(EnemyB(posX))
+            if len(self.enemies) < 5:
+                posX = uniform(-self.sceneW/2+1.15, self.sceneW/2-1.15)
+                if random() < 0.45:
+                    self.enemies.append(EnemyA(posX))
+                else:
+                    self.enemies.append(EnemyB(posX))
         
         # Update positions
         self.ship.updatePosition(self)
@@ -130,7 +130,7 @@ class Game:
                             glutLeaveMainLoop()
 
         # Atualizar a posição da luz
-        self.lightAngle += 0.01  # Ajuste a velocidade conforme necessário
+        self.lightAngle += 0.01  # velocidade do movimento
         self.lightPosition.x = 10 * math.cos(self.lightAngle)
         self.lightPosition.y = 10 * math.sin(self.lightAngle)
 

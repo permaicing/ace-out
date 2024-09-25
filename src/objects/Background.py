@@ -72,8 +72,6 @@ class Background:
         glVertex3f(-self.size, self.size, self.size)
 
 
-
-
         # Face inferior (movimento de textura para trás)
         glTexCoord2f(self.position, 0.0)
         glVertex3f(-self.size, -self.size, -self.size)

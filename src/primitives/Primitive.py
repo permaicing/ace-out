@@ -17,7 +17,7 @@ class Primitive:
         self.objectShine = objectShine
 
 
-    # Calcula a cor de sombreamento de um ponto usando o Modelo de IluminaÃ§Ã£o de Phong
+    # Calcula a cor de sombreamento de um ponto usando o Modelo de Phong
     def shading(self, point, normal, game):
         # reflexÃ£o ambiente
         shadeAmbient = game.lightAmbient * self.objectAmbient
@@ -32,13 +32,10 @@ class Primitive:
         r = 2*glm.dot(n,l)*n - l
         shadeSpecular = game.lightSpecular * self.objectSpecular * glm.max(0, glm.dot(v,r) ** self.objectShine)
 
-        # modelo de iluminaÃ§Ã£o de Phong
         shade = shadeAmbient + shadeDiffuse + shadeSpecular
         return shade
+
     
-    """
-    This function **MUST** be called inside a `glPushMatrix`/`glPopMatrix` pair.
-    """
     def draw(self):
         glTranslatef(self.position.x, self.position.y, self.position.z)
         glScalef(self.scale.x, self.scale.y, self.scale.z)

@@ -20,7 +20,7 @@ class Eneagon(Primitive):
         glPushMatrix()
         super().draw()
 
-        # Desenhar a face da frente (z = depth / 2)
+        # Desenhar a face da frente 
         glBegin(GL_POLYGON)
         normal = glm.vec3(0, 0, 1)  # Normal para a face da frente
         for i in range(self.n_sides):
@@ -31,7 +31,7 @@ class Eneagon(Primitive):
             glVertex3f(vertex.x, vertex.y, vertex.z)
         glEnd()
 
-        # Desenhar a face de trás (z = -depth / 2)
+        # Desenhar a face de trás 
         glBegin(GL_POLYGON)
         normal = glm.vec3(0, 0, -1)  # Normal para a face de trás
         for i in range(self.n_sides):
@@ -54,19 +54,19 @@ class Eneagon(Primitive):
 
             # Vértices da face da frente
             front_vertex = glm.vec3(x1, y1, self.depth / 2)
-            front_normal = glm.normalize(glm.vec3(x1, y1, 0))  # Normal na direção global
+            front_normal = glm.normalize(glm.vec3(x1, y1, 0))  # Normal com direção global
             front_color = super().shading(front_vertex, front_normal, game)
             glColor3f(front_color.r, front_color.g, front_color.b)
             glVertex3f(x1, y1, self.depth / 2)
 
             # Vértices da face de trás
             back_vertex = glm.vec3(x1, y1, -self.depth / 2)
-            back_normal = glm.normalize(glm.vec3(x1, y1, 0))  # Normal na direção global
+            back_normal = glm.normalize(glm.vec3(x1, y1, 0))  # Normal com direção global
             back_color = super().shading(back_vertex, back_normal, game)
             glColor3f(back_color.r, back_color.g, back_color.b)
             glVertex3f(x1, y1, -self.depth / 2)
 
-            # Conectar as bordas
+            # Conectando as bordas
             glVertex3f(x2, y2, self.depth / 2)
             glVertex3f(x2, y2, -self.depth / 2)
 

@@ -25,7 +25,7 @@ class Star(Primitive):
 
         theta = 0.0
 
-        # Desenhar a face da frente da estrela (z = depth / 2)
+        # Desenhar a face da frente da estrela
         normal = glm.vec3(0, 0, 1)
         glBegin(GL_TRIANGLE_FAN)
 
@@ -50,7 +50,7 @@ class Star(Primitive):
             theta += 2.0 * PI / self.n_corners
         glEnd()
 
-        # Desenhar a face de trás da estrela (z = -depth / 2)
+        # Desenhar a face de trás da estrela 
         theta = 0.0
         normal = glm.vec3(0, 0, -1)  # Normal para a parte de trás
         glBegin(GL_TRIANGLE_FAN)
