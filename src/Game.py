@@ -96,7 +96,7 @@ class Game:
         
         for enemy in self.enemies:
             enemy.updatePosition()
-            if enemy.position.y < -self.sceneH or abs(enemy.position.x) > self.sceneW:
+            if enemy.position.y < -7 or abs(enemy.position.x) > self.sceneW:
                 self.enemies.remove(enemy)
         self.background.updatePosition()
 
