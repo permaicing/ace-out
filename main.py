@@ -11,6 +11,7 @@ if __name__ == '__main__':
     game = Game()
     glutInitWindowSize(game.windowW, game.windowH)
     glutInitWindowPosition(0, 0)
+    glutReshapeWindow(game.windowW, game.windowH)
 
     glutTimerFunc(int(1000 / game.FPS), game.timer, 0)
     glutSpecialFunc(game.keyboardSpecial)

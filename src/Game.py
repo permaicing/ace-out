@@ -32,8 +32,8 @@ class Game:
         self.left = False
         self.right = False
 
-        self.windowH = 80
-        self.windowW = 80
+        self.windowH = 360
+        self.windowW = 640
         self.sceneH = 20
         self.sceneW = 20
 
